@@ -5,7 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { TicketStatus } from '@prisma/client';
 import { createEnrollmentWithAddress, createPayment, createTicket, createTicketType, createUser } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
-import { createHotel, createRoomWithHotelId } from '../factories/hotels-factory';
+import { createHotels, createRoomWithHotelId } from '../factories/hotels-factory';
 import { prisma } from '@/config';
 import app, { init } from '@/app';
 
@@ -115,7 +115,7 @@ describe('GET /hotels', () => {
       const ticketType = await createTicketType(false, true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
 
       const { status, body } = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
       expect(status).toBe(httpStatus.OK);
@@ -160,7 +160,7 @@ describe('GET /hotels/:holelId', () => {
     it('should respond with status 404 when user has no enrollment', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
       const room = await createRoomWithHotelId(createdHotel.id);
 
       const { status } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
@@ -171,7 +171,7 @@ describe('GET /hotels/:holelId', () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       await createEnrollmentWithAddress(user);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
       const room = await createRoomWithHotelId(createdHotel.id);
 
       const { status } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
@@ -185,7 +185,7 @@ describe('GET /hotels/:holelId', () => {
       const ticketType = await createTicketType(false, true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
 
       await prisma.hotel.delete({
         where: {
@@ -204,7 +204,7 @@ describe('GET /hotels/:holelId', () => {
       const ticketType = await createTicketType(true, false);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
       const room = await createRoomWithHotelId(createdHotel.id);
 
       const { status } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
@@ -217,7 +217,7 @@ describe('GET /hotels/:holelId', () => {
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(false, true);
       await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
       const room = await createRoomWithHotelId(createdHotel.id);
 
       const { status } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
@@ -231,7 +231,7 @@ describe('GET /hotels/:holelId', () => {
       const ticketType = await createTicketType(false, false);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
       const room = await createRoomWithHotelId(createdHotel.id);
 
       const { status } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
@@ -245,7 +245,7 @@ describe('GET /hotels/:holelId', () => {
       const ticketType = await createTicketType(false, true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
       const room = await createRoomWithHotelId(createdHotel.id);
 
       const { status, body } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
@@ -276,7 +276,7 @@ describe('GET /hotels/:holelId', () => {
       const ticketType = await createTicketType(false, true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const createdHotel = await createHotel();
+      const createdHotel = await createHotels();
 
       const { status, body } = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
       expect(status).toBe(httpStatus.OK);
